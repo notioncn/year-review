@@ -1,0 +1,119 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  avatar    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  tasks       Task[]
+  projects    Project[]
+  knowledge   Knowledge[]
+  healthLogs  HealthLog[]
+  financeLogs FinanceLog[]
+}
+
+// 任务模型
+model Task {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  status      String   @default("todo") // todo, in_progress, done
+  priority    String   @default("medium") // low, medium, high
+  dueDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  projectId String?
+  project   Project? @relation(fields: [projectId], references: [id])
+}
+
+// 项目模型
+model Project {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  status      String   @default("active") // active, completed, archived
+  startDate   DateTime?
+  endDate     DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  tasks  Task[]
+}
+
+// 知识模型
+model Knowledge {
+  id          String   @id @default(uuid())
+  title       String
+  content     String?
+  type        String   // note, book, course
+  tags        String?  // JSON格式存储标签数组
+  source      String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+// 健康日志
+model HealthLog {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  sleepHours  Float?
+  energyLevel Int?     // 1-10
+  exercise    String?
+  mood        String?  // good, neutral, bad
+  notes       String?
+  createdAt   DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+// 财务日志
+model FinanceLog {
+  id          String   @id @default(uuid())
+  date        DateTime @default(now())
+  amount      Float
+  type        String   // income, expense
+  category    String
+  description String?
+  createdAt   DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+// 生命之花跟踪
+model LifeFlower {
+  id             String   @id @default(uuid())
+  date           DateTime @default(now())
+  selfScore      Int      // 自我实现分数
+  careerScore    Int      // 职业发展分数
+  healthScore    Int      // 身心健康分数
+  relationScore  Int      // 关系网络分数
+  notes          String?
+  createdAt      DateTime @default(now())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+} 

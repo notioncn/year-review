@@ -13,7 +13,7 @@ import {
   Icon,
   useColorModeValue
 } from '@chakra-ui/react'
-import { FiTarget, FiClock, FiBattery, FiBrain } from 'react-icons/fi'
+import { FiTarget, FiClock, FiBattery, FiActivity } from 'react-icons/fi'
 
 interface MetricCardProps {
   label: string
@@ -89,11 +89,11 @@ export default function DailyOverview() {
           label="专注时间"
           value="4小时"
           helpText="高于平均水平"
-          icon={FiBrain}
+          icon={FiActivity}
           progress={80}
           color="orange.500"
         />
       </SimpleGrid>
     </Box>
   )
-} 
+}
